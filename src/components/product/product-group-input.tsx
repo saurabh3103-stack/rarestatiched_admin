@@ -31,6 +31,7 @@ const ProductGroupInput = ({ control, error }: Props) => {
       />
       <ValidationError message={t(error!)} />
     </div>
+    
   );
 };
 

@@ -80,13 +80,13 @@ export default function WithdrawsPage() {
         </LinkButton>
       </Card>
 
-      <WithdrawList
+      {/* <WithdrawList
         withdraws={withdraws}
         paginatorInfo={paginatorInfo}
         onPagination={handlePagination}
         onOrder={setOrder}
         onSort={setColumn}
-      />
+      /> */}
     </>
   );
 }

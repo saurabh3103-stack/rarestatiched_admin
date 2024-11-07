@@ -58,6 +58,7 @@ import StickyFooterPanel from '@/components/ui/sticky-footer-panel';
 import { ProductDescriptionSuggestion } from '@/components/product/product-ai-prompt';
 import RichTextEditor from '@/components/ui/wysiwyg-editor/editor';
 import TooltipLabel from '@/components/ui/tooltip-label';
+import SelectInput from '../ui/select-input';
 
 type ProductFormProps = {
   initialValues?: Product | null;
@@ -130,10 +131,14 @@ export default function CreateOrUpdateProductForm({
   const { mutate: updateProduct, isLoading: updating } =
     useUpdateProductMutation();
 
+  const [productCategory, setProductCategory] = useState(null);
+  console.log(productCategory)
+
   const onSubmit = async (values: ProductFormValues) => {
     const inputValues = {
       language: router.locale,
       ...getProductInputValues(values, initialValues),
+      product_category: productCategory,
     };
 
     try {
@@ -396,6 +401,21 @@ export default function CreateOrUpdateProductForm({
                 control={control}
                 error={t((errors?.type as any)?.message)}
               />
+           <div className="mb-5">
+  <Label>Product-Highlight</Label>
+  <select
+    id="product_category"
+    name="product_category"
+    value={productCategory}
+    onChange={(e) => setProductCategory(e.target.value)} // Update state on selection
+    className="block w-full px-4 py-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+  >
+    <option value="Hot New" className="text-gray-700">Hot New</option>
+    <option value="Discounted" className="text-gray-700">Discounted</option>
+    <option value="Most Trending" className="text-gray-700">Most Trending</option>
+  </select>
+</div>
+
               <ProductCategoryInput control={control} setValue={setValue} />
               {/* it's not needed in chawkbazar */}
               {/* <ProductAuthorInput control={control} /> */}

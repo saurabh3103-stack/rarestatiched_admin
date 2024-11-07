@@ -233,11 +233,7 @@ export const siteSettings = {
             label: 'sidebar-nav-item-shippings',
             icon: 'ShippingsIcon',
           },
-          {
-            href: Routes.withdraw.list,
-            label: 'sidebar-nav-item-withdraws',
-            icon: 'WithdrawIcon',
-          },
+         
           // {
           //   href: '',
           //   label: 'sidebar-nav-item-refunds',
