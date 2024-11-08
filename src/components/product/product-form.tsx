@@ -132,13 +132,19 @@ export default function CreateOrUpdateProductForm({
     useUpdateProductMutation();
 
   const [productCategory, setProductCategory] = useState(null);
+  const [sizeChart, setSizeChart] = useState(null); // Manage size chart state
+  const [lowerImageHighlight, setLowerImageHighlight] = useState(null);
   console.log(productCategory)
-
+  console.log(sizeChart)
   const onSubmit = async (values: ProductFormValues) => {
+   
     const inputValues = {
       language: router.locale,
       ...getProductInputValues(values, initialValues),
       product_category: productCategory,
+      size_chart: sizeChart,
+      lower_image_highlight: lowerImageHighlight, 
+      
     };
 
     try {
@@ -404,17 +410,50 @@ export default function CreateOrUpdateProductForm({
            <div className="mb-5">
   <Label>Product-Highlight</Label>
   <select
-    id="product_category"
-    name="product_category"
-    value={productCategory}
-    onChange={(e) => setProductCategory(e.target.value)} // Update state on selection
-    className="block w-full px-4 py-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
-  >
-    <option value="Hot New" className="text-gray-700">Hot New</option>
-    <option value="Discounted" className="text-gray-700">Discounted</option>
-    <option value="Most Trending" className="text-gray-700">Most Trending</option>
-  </select>
+  id="product_category"
+  name="product_category"
+  value={productCategory || ""}  // Default value is null (empty string for "Select..."), will update on change
+  onChange={(e) => setProductCategory(e.target.value || null)} // Update the state and set null if no category is selected
+  className="block w-full px-4 py-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+>
+  <option value="" className="text-gray-700">Select...</option>  {/* Default option with empty value */}
+  <option value="Hot New" className="text-gray-700">Hot New</option>
+  <option value="Discounted" className="text-gray-700">Discounted</option>
+  <option value="Most Trending" className="text-gray-700">Most Trending</option>
+</select>
 </div>
+
+<div className="mb-5">
+        <Label>Manage Size Chart</Label>
+        <select
+          id="size_chart"
+          name="size_chart"
+          value={sizeChart || ""}
+          onChange={(e) => setSizeChart(e.target.value === "" ? null : e.target.value === "true")} // Convert to true/false/null
+          className="block w-full px-4 py-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+        >
+          <option value="" className="text-gray-700">Select Size Chart...</option>
+          <option value="true" className="text-gray-700">True</option>
+          <option value="false" className="text-gray-700">False</option>
+        </select>
+      </div>
+      <div className="mb-5">
+        <Label>Lower Image Highlight</Label>
+        <select
+          id="lower_image_highlight"
+          name="lower_image_highlight"
+          value={lowerImageHighlight || ""}
+          onChange={(e) => setLowerImageHighlight(e.target.value || null)} // Set null if "Select..." is chosen
+          className="block w-full px-4 py-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+        >
+          <option value="" className="text-gray-700">Select Fabric Type...</option>
+          <option value="100% Fabric" className="text-gray-700">100% Fabric</option>
+          <option value="100% Cotton" className="text-gray-700">100% Cotton</option>
+          <option value="Polyester Blend" className="text-gray-700">Polyester Blend</option>
+          <option value="Wool Blend" className="text-gray-700">Wool Blend</option>
+          <option value="Linen" className="text-gray-700">Linen</option>
+        </select>
+      </div>
 
               <ProductCategoryInput control={control} setValue={setValue} />
               {/* it's not needed in chawkbazar */}
