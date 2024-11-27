@@ -39,7 +39,6 @@
       "NEXT_PUBLIC_ORDER_CREATED_EVENT": "order.create.event",
       "NEXT_PUBLIC_MESSAGE_EVENT": "message.event",
       "NEXT_PUBLIC_VERSION": "6.6.0"
-    },
-    "buildCommand": "npm install --legacy-peer-deps && npm run build"
+    }
   }
 }
