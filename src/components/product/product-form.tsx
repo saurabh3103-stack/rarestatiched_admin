@@ -436,24 +436,25 @@ export default function CreateOrUpdateProductForm({
           rows={3} // Adjust the height of the textarea as needed
         />
       </div>
+{console.log(sizeChart)}
+      <div className="mb-5">
+  <Label>Manage Size Chart</Label>
+  <select
+    id="size_chart"
+    name="size_chart"
+    value={sizeChart || "false"} // Default to "false" if sizeChart is null/undefined
+    onChange={(e) => setSizeChart(e.target.value === "false" ? null : e.target.value)} // Handle "false" as null, otherwise set the value
+    className="block w-full px-4 py-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+  >
+    <option value="false" className="text-gray-700">Select Size Chart...</option>
+    <option value="t-shirt" className="text-gray-700">T-shirt Size Chart</option>
+    <option value="shirt" className="text-gray-700">Shirt Size Chart</option>
+    <option value="oversized-tshirt" className="text-gray-700">Oversized T-shirt Size Chart</option>
+    <option value="hoodie" className="text-gray-700">Hoodie Size Chart</option>
+    <option value="oversized-hoodie" className="text-gray-700">Oversized Hoodie Size Chart</option>
+  </select>
+</div>
 
-<div className="mb-5">
-        <Label>Manage Size Chart</Label>
-        <select
-          id="size_chart"
-          name="size_chart"
-          value={sizeChart || ""}
-          onChange={(e) => setSizeChart(e.target.value === "" ? null : e.target.value === "true")} // Convert to true/false/null
-          className="block w-full px-4 py-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
-        >
-          <option value='false' className="text-gray-700">Select Size Chart...</option>
-          <option value="t-shirt" className="text-gray-700">T-shirt Size Chart</option>
-          <option value="shirt" className="text-gray-700">Shirt Size Chart</option>
-          <option value="oversized-tshirt" className="text-gray-700">Oversized T-shirt Size Chart</option>
-          <option value="hoodie" className="text-gray-700">Hoodie Size Chart</option>
-          <option value="oversized-hoodie" className="text-gray-700">Oversized Hoodie Size Chart</option>
-        </select>
-      </div>
       <div className="mb-5">
         <Label>Lower Image Highlight</Label>
         <select
