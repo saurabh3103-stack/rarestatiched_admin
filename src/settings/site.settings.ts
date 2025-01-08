@@ -721,25 +721,7 @@ export const siteSettings = {
         ],
       },
 
-      financial: {
-        href: '',
-        label: 'text-financial-management',
-        icon: 'WithdrawIcon',
-        childMenu: [
-          {
-            href: (shop: string) => `/${shop}${Routes.withdraw.list}`,
-            label: 'sidebar-nav-item-withdraws',
-            icon: 'AttributeIcon',
-            permissions: adminAndOwnerOnly,
-          },
-          // {
-          //   href: (shop: string) => `/${shop}${Routes.refund.list}`,
-          //   label: 'sidebar-nav-item-refunds',
-          //   icon: 'RefundsIcon',
-          //   permissions: adminOwnerAndStaffOnly,
-          // },
-        ],
-      },
+     
 
       order: {
         href: '',
