@@ -34,7 +34,6 @@ const OrderList = ({
   onSort,
   onOrder,
 }: IProps) => {
-  // const { data, paginatorInfo } = orders! ?? {};
   const router = useRouter();
   const { t } = useTranslation();
   const rowExpandable = (record: any) => record.children?.length;
@@ -51,13 +50,7 @@ const OrderList = ({
     column: null,
   });
 
-  const onSubmit = async (shop_id: string | undefined) => {
-    setLoading(shop_id);
-    createConversations({
-      shop_id: Number(shop_id),
-      via: 'admin',
-    });
-  };
+  const [selectedOrders, setSelectedOrders] = useState<number[]>([]);
 
   const onHeaderClick = (column: string | null) => ({
     onClick: () => {
@@ -74,7 +67,51 @@ const OrderList = ({
     },
   });
 
+  const handleSelectOrder = (id: number) => {
+    setSelectedOrders((prevSelected) =>
+      prevSelected.includes(id)
+        ? prevSelected.filter((orderId) => orderId !== id)
+        : [...prevSelected, id]
+    );
+  };
+
+  const handleDelete = () => {
+    console.log("Deleting Orders:", selectedOrders);
+    // Implement delete logic here
+  };
+
+  const handleDisable = () => {
+    console.log("Disabling Orders:", selectedOrders);
+    // Implement disable logic here
+  };
+
   const columns = [
+    {
+      title: (
+        <input
+          type="checkbox"
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedOrders(orders?.map(order => order.id) || []);
+            } else {
+              setSelectedOrders([]);
+            }
+          }}
+          checked={selectedOrders.length === (orders?.length || 0)}
+        />
+      ),
+      dataIndex: 'select',
+      key: 'select',
+      align: 'center',
+      width: 50,
+      render: (text: any, record: Order) => (
+        <input
+          type="checkbox"
+          checked={selectedOrders.includes(record.id)}
+          onChange={() => handleSelectOrder(record.id)}
+        />
+      ),
+    },
     {
       title: t('table:table-item-tracking-number'),
       dataIndex: 'tracking_number',
@@ -97,18 +134,8 @@ const OrderList = ({
       align: alignLeft,
       width: 250,
       onHeaderCell: () => onHeaderClick('name'),
-      // render: (logo: any, record: any) => (
-      //   <Image
-      //     src={logo?.thumbnail ?? siteSettings.product.placeholder}
-      //     alt={record?.name}
-      //     width={42}
-      //     height={42}
-      //     className="overflow-hidden rounded"
-      //   />
-      // ),
       render: (customer: any) => (
         <div className="flex items-center">
-          {/* <Avatar name={customer.name} src={customer?.profile.avatar.thumbnail} /> */}
           <Avatar name={customer?.name} />
           <div className="flex flex-col whitespace-nowrap font-medium ms-2">
             {customer?.name ? customer?.name : t('common:text-guest')}
@@ -127,7 +154,6 @@ const OrderList = ({
       render: (products: Product) => <span>{products.length}</span>,
     },
     {
-      // title: t('table:table-item-order-date'),
       title: (
         <TitleWithSort
           title={t('table:table-item-order-date')}
@@ -206,48 +232,38 @@ const OrderList = ({
       key: 'actions',
       align: alignRight,
       width: 120,
-      render: (id: string, order: Order) => {
-        const currentButtonLoading = !!loading && loading === order?.shop_id;
-        return (
-          <>
-            {/* @ts-ignore */}
-            {/* {order?.children?.length ? (
-              ''
-            ) : (
-              <>
-                {permissions?.includes(SUPER_ADMIN) && order?.shop_id ? (
-                  <button
-                    onClick={() => onSubmit(order?.shop_id)}
-                    disabled={currentButtonLoading}
-                    className="cursor-pointer text-accent transition-colors duration-300 me-1.5 hover:text-accent-hover"
-                  >
-                    <ChatIcon width="19" height="20" />
-                  </button>
-                ) : (
-                  ''
-                )}
-              </>
-            )} */}
-            <ActionButtons
-              id={id}
-              detailsUrl={`${router.asPath}/${id}`}
-              customLocale={order.language}
-            />
-          </>
-        );
-      },
+      render: (id: string, order: Order) => (
+        <ActionButtons
+          id={id}
+          detailsUrl={`${router.asPath}/${id}`}
+          customLocale={order.language}
+        />
+      ),
     },
   ];
 
   return (
     <>
+      {selectedOrders.length > 0 && (
+        <div className="mb-4 p-4 border border-gray-300 rounded">
+          <h3 className="text-lg font-semibold">Selected Orders Actions</h3>
+          <div className="flex space-x-4 mt-2">
+            <button className="p-2 bg-red-500 text-white rounded" onClick={handleDelete}>
+              Delete
+            </button>
+            <button className="p-2 bg-gray-500 text-white rounded" onClick={handleDisable}>
+              Disable
+            </button>
+          </div>
+        </div>
+      )}
       <div className="mb-6 overflow-hidden rounded shadow">
         <Table
           //@ts-ignore
           columns={columns}
           emptyText={() => (
             <div className="flex flex-col items-center py-7">
-              <NoDataFound className="w-52" />
+              <NoDataFound className ="w-52" />
               <div className="mb-1 pt-6 text-base font-semibold text-heading">
                 {t('table:empty-table-data')}
               </div>

@@ -792,7 +792,7 @@ const ShopForm = ({ initialValues }: { initialValues?: Shop }) => {
           <div className="mb-5 text-end">
             <Button
               loading={creating || updating}
-              disabled={creating || updating || totalShops >= 1} // Disable if totalShops is more than 1
+              disabled={creating || updating } // Disable if totalShops is more than 1
             >
               {initialValues
                 ? t('form:button-label-update')

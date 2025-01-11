@@ -40,7 +40,6 @@ const ProductList = ({
   onSort,
   onOrder,
 }: IProps) => {
-  // const { data, paginatorInfo } = products! ?? {};
   const router = useRouter();
   const {
     query: { shop },
@@ -52,6 +51,8 @@ const ProductList = ({
     sort: SortOrder.Desc,
     column: null,
   });
+
+  const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
 
   const onHeaderClick = (column: string | null) => ({
     onClick: () => {
@@ -68,7 +69,46 @@ const ProductList = ({
     },
   });
 
+  const handleSelectProduct = (id: number) => {
+    setSelectedProducts((prevSelected) =>
+      prevSelected.includes(id)
+        ? prevSelected.filter((productId) => productId !== id)
+        : [...prevSelected, id]
+    );
+  };
+
+  const handleActionOnSelectedProducts = () => {
+    // Implement the action you want to perform on selected products
+    console.log("Selected Products IDs:", selectedProducts);
+  };
+
   let columns = [
+    {
+      title: (
+        <input
+          type="checkbox"
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedProducts(products?.map(product => product.id) || []);
+            } else {
+              setSelectedProducts([]);
+            }
+          }}
+          checked={selectedProducts.length === (products?.length || 0)}
+        />
+      ),
+      dataIndex: 'select',
+      key: 'select',
+      align: 'center',
+      width: 50,
+      render: (text: any, record: Product) => (
+        <input
+          type="checkbox"
+          checked={selectedProducts.includes(record.id)}
+          onChange={() => handleSelectProduct(record.id)}
+        />
+      ),
+    },
     {
       title: t('table:table-item-id'),
       dataIndex: 'id',
@@ -94,7 +134,7 @@ const ProductList = ({
       width: 280,
       ellipsis: true,
       onHeaderCell: () => onHeaderClick('name'),
-      render: (name: string, { image, type }: { image: any; type: any }) => (
+      render: ( name: string, { image, type }: { image: any; type: any }) => (
         <div className="flex items-center">
           <div className="relative aspect-square h-10 w-10 shrink-0 overflow-hidden rounded border border-border-200/80 bg-gray-100 me-2.5">
             <Image
@@ -148,7 +188,6 @@ const ProductList = ({
         </div>
       ),
     },
-
     {
       title: (
         <TitleWithSort
@@ -229,7 +268,7 @@ const ProductList = ({
         <div
           className={`flex justify-start ${
             record?.quantity > 0 && record?.quantity < 10
-              ? 'flex-col items-baseline space-y-2 3xl:flex-row 3xl:space-x-2 3xl:space-y-0 rtl:3xl:space-x-reverse'
+              ? 'flex-col items-baseline space-y-2 3xl:flex-row 3xl:space-x-2 3xl:space-y-0 rtl:3xl:space-x -reverse'
               : 'items-center space-x-2 rtl:space-x-reverse'
           }`}
         >
@@ -277,8 +316,29 @@ const ProductList = ({
     columns = columns?.filter((column) => column?.key !== 'shop');
   }
 
+
+  function handleDisable(){
+    console.log(selectedProducts)
+  }
+  function handleDelete(){
+    console.log(selectedProducts)
+  }
   return (
     <>
+
+{selectedProducts.length > 0 && (
+        <div className="mb-4 p-4 border border-gray-300 rounded">
+          <h3 className="text-lg font-semibold">Selected Products Actions</h3>
+          <div className="flex space-x-4 mt-2">
+            <button className="p-2 bg-red-500 text-white rounded" onClick={handleDelete}>
+              Delete
+            </button>
+            <button className="p-2 bg-gray-500 text-white rounded" onClick={handleDisable}>
+              Disable
+            </button>
+          </div>
+        </div>
+      )}
       <div className="mb-6 overflow-hidden rounded shadow">
         <Table
           /* @ts-ignore */
@@ -297,6 +357,14 @@ const ProductList = ({
           scroll={{ x: 900 }}
         />
       </div>
+
+      {/* <button onClick={handleActionOnSelectedProducts} className="mb-4 p-2 bg-blue-500 text-white rounded">
+        Perform Action on Selected Products
+      </button> */}
+
+    
+
+      
 
       {!!paginatorInfo?.total && (
         <div className="flex items-center justify-end">

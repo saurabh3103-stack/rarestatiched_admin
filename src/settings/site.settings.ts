@@ -139,12 +139,12 @@ export const siteSettings = {
             label: 'sidebar-nav-item-my-shops',
             icon: 'MyShopIcon',
           },
-          {
-            href: Routes.ownershipTransferRequest.list,
-            label: 'Shop Transfer Request',
-            icon: 'MyShopIcon',
-            permission: adminAndOwnerOnly,
-          },
+          // {
+          //   href: Routes.ownershipTransferRequest.list,
+          //   label: 'Shop Transfer Request',
+          //   icon: 'MyShopIcon',
+          //   permission: adminAndOwnerOnly,
+          // },
         ],
       },
 
