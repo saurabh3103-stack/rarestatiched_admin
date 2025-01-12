@@ -7,6 +7,9 @@ import Badge from '@/components/ui/badge/badge';
 import { Router, useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { NoDataFound } from '@/components/icons/no-data-found';
+import React, { useEffect } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {
   Product,
   MappedPaginatorInfo,
@@ -19,6 +22,7 @@ import { useState } from 'react';
 import TitleWithSort from '@/components/ui/title-with-sort';
 import { Routes } from '@/config/routes';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
+import axios from 'axios';
 
 export type IProps = {
   products: Product[] | undefined;
@@ -53,6 +57,12 @@ const ProductList = ({
   });
 
   const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
+  const [status, setStatus] = useState('publish'); // Default to "publish"
+  const [productsUpdated, setProductsUpdated] = useState(false);
+
+  const handleStatusChange = (event) => {
+    setStatus(event.target.value); // Update the selected status
+  };
 
   const onHeaderClick = (column: string | null) => ({
     onClick: () => {
@@ -317,27 +327,92 @@ const ProductList = ({
   }
 
 
-  function handleDisable(){
-    console.log(selectedProducts)
-  }
-  function handleDelete(){
-    console.log(selectedProducts)
-  }
+  const handleDisable = async () => {
+    const url = 'https://fun2sh.deificindia.com/products/multiupdate';
+    const headers = {
+      'Content-Type': 'application/json',
+      'Cookie': `XSRF-TOKEN=eyJpdiI6ImE1VDV4OVlHTnA1VUpNR0RQZk9IUWc9PSIsInZhbHVlIjoiOU9UaU44eXpnK2JtVHR0VFdoam5jQlJET0kzanhIYzQydUMxMFpXcjAvNjRnUVJOY0Q2UGg0aDA2c0hhQXAra0xjS3lFV1Z3ejg0aFVIWFlqL0lLSHB6dGx4NitKRjVGOHhLc292a2VkK0xzYnNLamQzSzVnYmFJSGdBYTZaQmIiLCJtYWMiOiIwNDE4MWQxN2FkYWQ3ZDBmYWY3YTdjNTE1NWFiODAzNmU2ZDYxYzliZDlhMjc1MWYxMDAxMGY1ZmEzYjA4Y2JlIiwidGFnIjoiIn0%3D; chawkbazar_session=eyJpdiI6IjdMYmxHdVpwNHgrUER6QmkwRHlQTFE9PSIsInZhbHVlIjoiYWRzWStndG1QeWU5cEZLWlVBTkxoV3N0T3pmY3JTd01Fc0R0UkUvcG9LT1BMUmpJSWZXdFBTdjdZcTVUUzRxekxkSERJdXl2cy9HdHZDWkNKTkNiRzdScG5pZ3hMYkdkbUFzNXNUZWRTeVpvaTRTQ0lTemUvMVRDVEJrTnlyNXYiLCJtYWMiOiI1ZDNhNmY1ZTRmMmJlNTlhYjZhMDhhNzAxNzBhNjMyYTRhOWI2YzQzOWZiMDQyZjFkNTRiMTM3ZDU0NjgwODVlIiwidGFnIjoiIn0%3D`,
+    };
+  
+    // Sending data as an array
+    const payload = {
+      id: selectedProducts, // Array of selected product IDs
+      status
+    };
+  
+    try {
+      const response = await axios.post(url, payload, { headers });
+      console.log('API Response:', response.data);
+      toast.success('Products updated successfully!', {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000, // Auto close after 3 seconds
+      });
+      setProductsUpdated(true);
+    } catch (error) {
+      console.error('Error occurred:', error.response || error.message);
+      toast.error('An error occurred while updating products.', {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000, // Auto close after 3 seconds
+      });
+    }
+  };
+
+
+  useEffect(() => {
+    if (productsUpdated) {
+      // Fetch or update UI here after products are updated
+      console.log('Products updated. You can refresh the UI here.');
+      setProductsUpdated(false); // Reset state
+    }
+  }, [productsUpdated]);
+  
+  
+  
+
+
+
+
+  // Run only once when the component loads
   return (
     <>
 
 {selectedProducts.length > 0 && (
-        <div className="mb-4 p-4 border border-gray-300 rounded">
-          <h3 className="text-lg font-semibold">Selected Products Actions</h3>
-          <div className="flex space-x-4 mt-2">
-            <button className="p-2 bg-red-500 text-white rounded" onClick={handleDelete}>
-              Delete
-            </button>
-            <button className="p-2 bg-gray-500 text-white rounded" onClick={handleDisable}>
-              Disable
-            </button>
-          </div>
-        </div>
+
+ <>
+        <div className="mb-6 p-6 border border-gray-300 rounded-lg bg-white shadow-md">
+  <h3 className="text-xl font-bold text-gray-800 mb-4">Selected Products Actions</h3>
+  <div className="flex items-center space-x-6">
+    <div>
+      <label 
+        htmlFor="statusSelect" 
+        className="block text-sm font-medium text-gray-600 mb-2"
+      >
+        Select Status:
+      </label>
+      <select
+        id="statusSelect"
+        value={status}
+        onChange={handleStatusChange}
+        className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none text-gray-700"
+      >
+        <option value="publish">Published</option>
+        <option value="approved">Approved</option>
+        <option value="rejected">Rejected</option>
+        <option value="soft_disabled">Soft Disabled</option>
+      </select>
+    </div>
+    <button
+      className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md shadow-sm hover:bg-blue-700 transition-colors duration-200 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+      onClick={handleDisable}
+    >
+      Change Status
+    </button>
+  </div>
+</div>
+
+        
+        </>
+        
       )}
       <div className="mb-6 overflow-hidden rounded shadow">
         <Table

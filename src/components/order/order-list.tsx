@@ -11,13 +11,17 @@ import { MappedPaginatorInfo, Order, Product, SortOrder } from '@/types';
 import { getAuthCredentials } from '@/utils/auth-utils';
 import { useIsRTL } from '@/utils/locals';
 import usePrice from '@/utils/use-price';
+import axios from 'axios';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { useEffect } from 'react';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 type IProps = {
   orders: Order[] | undefined;
@@ -51,6 +55,8 @@ const OrderList = ({
   });
 
   const [selectedOrders, setSelectedOrders] = useState<number[]>([]);
+   const [status, setStatus] = useState('publish'); // Default to "publish"
+   const [ordersUpdated, setOrdersUpdated] = useState(false);
 
   const onHeaderClick = (column: string | null) => ({
     onClick: () => {
@@ -75,15 +81,57 @@ const OrderList = ({
     );
   };
 
+  const handleStatusChange = (event) => {
+    setStatus(event.target.value); // Update the selected status
+  };
+
   const handleDelete = () => {
     console.log("Deleting Orders:", selectedOrders);
     // Implement delete logic here
   };
 
-  const handleDisable = () => {
-    console.log("Disabling Orders:", selectedOrders);
-    // Implement disable logic here
+  const handleDisable = async () => {
+    const url = 'https://fun2sh.deificindia.com/orders/multiupdate';
+    const headers = {
+      'Content-Type': 'application/json',
+      'Cookie': `XSRF-TOKEN=eyJpdiI6ImE1VDV4OVlHTnA1VUpNR0RQZk9IUWc9PSIsInZhbHVlIjoiOU9UaU44eXpnK2JtVHR0VFdoam5jQlJET0kzanhIYzQydUMxMFpXcjAvNjRnUVJOY0Q2UGg0aDA2c0hhQXAra0xjS3lFV1Z3ejg0aFVIWFlqL0lLSHB6dGx4NitKRjVGOHhLc292a2VkK0xzYnNLamQzSzVnYmFJSGdBYTZaQmIiLCJtYWMiOiIwNDE4MWQxN2FkYWQ3ZDBmYWY3YTdjNTE1NWFiODAzNmU2ZDYxYzliZDlhMjc1MWYxMDAxMGY1ZmEzYjA4Y2JlIiwidGFnIjoiIn0%3D; chawkbazar_session=eyJpdiI6IjdMYmxHdVpwNHgrUER6QmkwRHlQTFE9PSIsInZhbHVlIjoiYWRzWStndG1QeWU5cEZLWlVBTkxoV3N0T3pmY3JTd01Fc0R0UkUvcG9LT1BMUmpJSWZXdFBTdjdZcTVUUzRxekxkSERJdXl2cy9HdHZDWkNKTkNiRzdScG5pZ3hMYkdkbUFzNXNUZWRTeVpvaTRTQ0lTemUvMVRDVEJrTnlyNXYiLCJtYWMiOiI1ZDNhNmY1ZTRmMmJlNTlhYjZhMDhhNzAxNzBhNjMyYTRhOWI2YzQzOWZiMDQyZjFkNTRiMTM3ZDU0NjgwODVlIiwidGFnIjoiIn0%3D`,
+    };
+  
+    // Sending data as an array
+    const payload = {
+      id: selectedOrders, // Array of selected product IDs
+      order_status:status
+    };
+
+    
+
+   
+  
+    try {
+      const response = await axios.post(url, payload, { headers });
+      console.log('API Response:', response.data);
+      toast.success('Orders updated successfully!', {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000, // Auto close after 3 seconds
+      });
+      setOrdersUpdated(true);
+    } catch (error) {
+      console.error('Error occurred:', error.response || error.message);
+      toast.error('An error occurred while updating orders.', {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000, // Auto close after 3 seconds
+      });
+    }
   };
+  useEffect(() => {
+    if (ordersUpdated) {
+      // Fetch or update UI here after products are updated
+      console.log('Products updated. You can refresh the UI here.');
+      setOrdersUpdated(false); // Reset state
+    }
+  }, [ordersUpdated]);
+
+  
 
   const columns = [
     {
@@ -245,18 +293,44 @@ const OrderList = ({
   return (
     <>
       {selectedOrders.length > 0 && (
-        <div className="mb-4 p-4 border border-gray-300 rounded">
-          <h3 className="text-lg font-semibold">Selected Orders Actions</h3>
-          <div className="flex space-x-4 mt-2">
-            <button className="p-2 bg-red-500 text-white rounded" onClick={handleDelete}>
-              Delete
-            </button>
-            <button className="p-2 bg-gray-500 text-white rounded" onClick={handleDisable}>
-              Disable
-            </button>
-          </div>
-        </div>
-      )}
+
+<>
+       <div className="mb-6 p-6 border border-gray-300 rounded-lg bg-white shadow-md">
+ <h3 className="text-xl font-bold text-gray-800 mb-4">Selected Products Actions</h3>
+ <div className="flex items-center space-x-6">
+   <div>
+     <label 
+       htmlFor="statusSelect" 
+       className="block text-sm font-medium text-gray-600 mb-2"
+     >
+       Select Status:
+     </label>
+     <select
+  id="statusSelect"
+  value={status}
+  onChange={handleStatusChange}
+  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none text-gray-700"
+>
+  <option value="order-pending">Order Pending</option>
+  <option value="order-processing">Order Processing</option>
+  <option value="order-at-local-facility">Order at Local Facility</option>
+  <option value="order-out-for-delivery">Order Out For Delivery</option>
+  <option value="order-completed">Order Completed</option>
+</select>
+   </div>
+   <button
+     className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md shadow-sm hover:bg-blue-700 transition-colors duration-200 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+     onClick={handleDisable}
+   >
+     Change Status
+   </button>
+ </div>
+</div>
+
+       
+       </>
+       
+     )}
       <div className="mb-6 overflow-hidden rounded shadow">
         <Table
           //@ts-ignore
