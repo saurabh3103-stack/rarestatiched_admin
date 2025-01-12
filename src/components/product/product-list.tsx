@@ -282,15 +282,23 @@ const ProductList = ({
               : 'items-center space-x-2 rtl:space-x-reverse'
           }`}
         >
+          {console.log(status)}
           <Badge
-            text={status}
-            color={
-              status.toLocaleLowerCase() === 'draft'
-                ? 'bg-yellow-400/10 text-yellow-500'
-                : 'bg-accent bg-opacity-10 !text-accent'
-            }
-            className="capitalize"
-          />
+  text={status}
+  color={
+    status.toLowerCase() === 'draft'
+      ? 'bg-yellow-400/10 text-yellow-500'
+      : status.toLowerCase() === 'rejected'
+      ? 'bg-red-400/10 text-red-500'
+      : status.toLowerCase() === 'publish'
+      ? 'bg-green-400/10 text-green-500'
+      : status.toLowerCase() === 'approved'
+      ? 'bg-blue-400/10 text-blue-500'
+      : 'bg-accent bg-opacity-10 !text-accent'
+  }
+  className="capitalize"
+/>
+
           {record?.quantity > 0 && record?.quantity < 10 && (
             <Badge
               text={t('common:text-low-quantity')}

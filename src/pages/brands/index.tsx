@@ -59,6 +59,8 @@ export default function TypesPage() {
           <h1 className="text-xl font-semibold text-heading">
             {t('common:sidebar-nav-item-groups')}
           </h1>
+
+         
         </div>
 
         <div className="flex w-full flex-col items-center space-y-4 ms-auto md:flex-row md:space-y-0 xl:w-1/2">
@@ -66,6 +68,7 @@ export default function TypesPage() {
 
           <LinkButton
             // href={`${ROUTES.BRANDS}/create`}
+          
             href={Routes.type.create}
             className="h-12 w-full md:w-auto md:ms-6"
           >

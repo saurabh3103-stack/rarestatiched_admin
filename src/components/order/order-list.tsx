@@ -55,7 +55,7 @@ const OrderList = ({
   });
 
   const [selectedOrders, setSelectedOrders] = useState<number[]>([]);
-   const [status, setStatus] = useState('publish'); // Default to "publish"
+   const [status, setStatus] = useState('order-pending'); // Default to "publish"
    const [ordersUpdated, setOrdersUpdated] = useState(false);
 
   const onHeaderClick = (column: string | null) => ({
@@ -270,9 +270,35 @@ const OrderList = ({
       dataIndex: 'order_status',
       key: 'order_status',
       align: 'center',
+      
       render: (order_status: string) => (
-        <Badge text={t(order_status)} color={StatusColor(order_status)} />
+        <>
+        <Badge
+  text={t(order_status)}
+  color={
+    t(order_status).toLowerCase() === 'draft'
+      ? 'bg-yellow-200 text-yellow-800'
+      : t(order_status).toLowerCase() === 'rejected'
+      ? 'bg-red-200 text-red-800'
+      : t(order_status).toLowerCase() === 'order out for delivery'
+      ? 'bg-pink-200 text-pink-800'
+      : t(order_status).toLowerCase() === 'processing'
+      ? 'bg-purple-200 text-purple-800'
+      : t(order_status).toLowerCase() === 'pending'
+      ? 'bg-orange-200 text-orange-800'
+      : t(order_status).toLowerCase() === 'completed'
+      ? 'bg-green-200 text-green-800'
+      : t(order_status).toLowerCase() === 'order at local facility'
+      ? 'bg-blue-200 text-blue-800'
+      : 'bg-gray-200 text-gray-800'
+  }
+  className="capitalize"
+/>
+
+
+        {console.log(t(order_status))}</>
       ),
+      
     },
     {
       title: t('table:table-item-actions'),

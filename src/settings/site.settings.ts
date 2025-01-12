@@ -122,11 +122,11 @@ export const siteSettings = {
                 label: 'text-all-shops',
                 icon: 'MyShopIcon',
               },
-              {
-                href: Routes.shop.create,
-                label: 'text-add-all-shops',
-                icon: 'ShopIcon',
-              },
+              // {
+              //   href: Routes.shop.create,
+              //   label: 'text-add-all-shops',
+              //   icon: 'ShopIcon',
+              // },
               {
                 href: Routes.newShops,
                 label: 'text-inactive-shops',
