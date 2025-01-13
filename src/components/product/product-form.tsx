@@ -404,6 +404,8 @@ export default function CreateOrUpdateProductForm({
             />
 
             <Card className="w-full sm:w-8/12 md:w-2/3">
+
+          
               <ProductGroupInput
                 control={control}
                 error={t((errors?.type as any)?.message)}
