@@ -19,8 +19,8 @@ const ProductGroupInput = ({ control, error }: Props) => {
     language: locale,
   });
   return (
-    <div className="mb-5" style={{ display: 'none' }}>
-      {/* <Label>{t('form:input-label-group')}*</Label>
+    <div className="mb-5" >
+      <Label>{t('form:input-label-group')}*</Label>
       <SelectInput
         name="type"
         control={control}
@@ -29,17 +29,8 @@ const ProductGroupInput = ({ control, error }: Props) => {
         options={types!}
         isLoading={loading}
       />
-      <ValidationError message={t(error!)} /> */}
-      <SelectInput
-  name="type"
-  control={control}
- 
-  getOptionLabel={(option: any) => option.name}
-  getOptionValue={(option: any) => option.id}
-  options={types!}
-  isLoading={loading}
-  style={{ display: 'none' }} // Hidden display
-/>
+      <ValidationError message={t(error!)} />
+      
     </div>
     
   );

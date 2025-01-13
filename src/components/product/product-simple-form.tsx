@@ -1,3 +1,8 @@
+
+
+
+
+
 import React, { useEffect } from 'react';
 import Input from '@/components/ui/input';
 import Description from '@/components/ui/description';
@@ -91,20 +96,27 @@ export default function ProductSimpleForm({ initialValues, settings }: IProps) {
           disabled={isTranslateProduct}
         />
 
-<Input
-          label={`${t('form:input-label-sku')}*`}
-          {...register('sku')}
-          note={
-            Config.enableMultiLang
-              ? `${t('form:input-note-multilang-sku')}`
-              : ''
-          }
-          error={t(errors.sku?.message!)}
-          variant="outline"
-          className="mb-5"
-          inputClassName="uppercase"
-          disabled={isTranslateProduct}
-        />
+<div style={{ display: 'none' }}>
+<div style={{ display: 'none' }}>
+  <Input
+    label={`${t('form:input-label-sku')}*`}
+    {...register('sku')}
+    defaultValue={`${initialValues?.name || ''}-SKU-${Date.now()}-${Math.floor(Math.random() * 1000)}-${Math.floor(Math.random() * 1000)}`}
+    note={
+      Config.enableMultiLang
+        ? `${t('form:input-note-multilang-sku')}`
+        : ''
+    }
+    error={t(errors.sku?.message!)}
+    variant="outline"
+    className="mb-5"
+    inputClassName="uppercase"
+    disabled={isTranslateProduct}
+  />
+</div>
+
+</div>
+
 
         <Input
           label={t('form:input-label-width')}
@@ -211,3 +223,27 @@ export default function ProductSimpleForm({ initialValues, settings }: IProps) {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

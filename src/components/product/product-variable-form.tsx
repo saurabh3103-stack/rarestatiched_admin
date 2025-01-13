@@ -1,28 +1,22 @@
-import Input from '@/components/ui/input';
+import React, { useEffect } from 'react';
+import { useFormContext, useWatch, FieldArrayWithId, FieldValues, FieldArrayPath, FieldArray, FieldArrayMethodProps } from 'react-hook-form';
 import {
-  useFormContext,
-  useWatch,
-  FieldArrayWithId,
-  FieldValues,
-  FieldArrayPath,
-  FieldArray,
-  FieldArrayMethodProps,
-} from 'react-hook-form';
+  useRouter
+} from 'next/router';
 import Button from '@/components/ui/button';
 import Description from '@/components/ui/description';
 import Card from '@/components/common/card';
 import Label from '@/components/ui/label';
 import Title from '@/components/ui/title';
+import Input from '../ui/input';
 import Checkbox from '@/components/ui/checkbox/checkbox';
 import SelectInput from '@/components/ui/select-input';
-import { useEffect } from 'react';
 import { Product, Settings } from '@/types';
 import { useTranslation } from 'next-i18next';
 import { useAttributesQuery } from '@/data/attributes';
 import FileInput from '@/components/ui/file-input';
 import ValidationError from '@/components/ui/form-validation-error';
 import { getCartesianProduct, filterAttributes } from './form-utils';
-import { useRouter } from 'next/router';
 import { Config } from '@/config';
 import { useSettingsQuery } from '@/data/settings';
 import { isObject } from 'lodash';
@@ -80,6 +74,22 @@ export default function ProductVariableForm({
     name: name,
   });
   const cartesianProduct = getCartesianProduct(getValues(name));
+  
+
+  // Use useEffect to copy values from index 0 to other indices
+  useEffect(() => {
+    const price = watch('variation_options.0.price');
+    const salePrice = watch('variation_options.0.sale_price');
+    const quantity = watch('variation_options.0.quantity');
+
+    fields.forEach((field, index) => {
+      if (index !== 0) {
+        setValue(`variation_options.${index}.price`, price);
+        setValue(`variation_options.${index}.sale_price`, salePrice);
+        setValue(`variation_options.${index}.quantity`, quantity);
+      }
+    });
+  }, [fields, watch, setValue]);
 
   return (
     <div className="my-5 flex flex-wrap sm:my-8">
@@ -98,7 +108,7 @@ export default function ProductVariableForm({
             {t('form:form-title-options')}
           </Title>
           <div>
-            {fields?.map((field: any, index: number) => {
+            {fields?.map((field, index) => {
               let watchAttr = watch(`variations.${index}.attribute`)?.values;
               return (
                 <div
@@ -110,9 +120,7 @@ export default function ProductVariableForm({
                       {t('form:form-title-options')} {index + 1}
                     </Title>
                     <button
-                      onClick={() => {
-                        return remove(index);
-                      }}
+                      onClick={() => remove(index)}
                       type="button"
                       className="text-sm text-red-500 transition-colors duration-200 hover:text-red-700 focus:outline-none"
                     >
@@ -128,7 +136,7 @@ export default function ProductVariableForm({
                         defaultValue={field.attribute}
                         getOptionLabel={(option: any) => option.name}
                         getOptionValue={(option: any) => option.id}
-                        options={filterAttributes(attributes, variations)!}
+                        options={filterAttributes(attributes, variations)}
                         isLoading={loading}
                       />
                     </div>
@@ -154,7 +162,7 @@ export default function ProductVariableForm({
           <div className="px-5 md:px-8">
             <Button
               disabled={fields?.length === attributes?.length}
-              onClick={(e: any) => {
+              onClick={(e) => {
                 e.preventDefault();
                 append({ attribute: '', value: [] });
               }}
@@ -170,191 +178,172 @@ export default function ProductVariableForm({
               <Title className="mb-0 px-5 text-center text-lg uppercase md:px-8">
                 {cartesianProduct?.length} {t('form:total-variation-added')}
               </Title>
-              {cartesianProduct.map(
-                (fieldAttributeValue: any, index: number) => {
-                  const is_update_message = watch(
-                    `variation_options.${index}.inform_purchased_customer`,
-                  );
-                  return (
-                    <div
-                      key={`fieldAttributeValues-${index}`}
-                      className="mt-5 mb-5 border-b border-dashed border-border-200 p-5 last:mb-8 last:border-0 md:p-8 md:last:pb-0"
-                    >
-                      <Title className="mb-8 !text-lg">
-                        {t('form:form-title-variant')}:{' '}
-                        <span className="font-normal text-blue-600">
-                          {Array.isArray(fieldAttributeValue)
-                            ? fieldAttributeValue?.map((a) => a.value).join('/')
-                            : fieldAttributeValue?.title}
+              {cartesianProduct.map((fieldAttributeValue, index) => {
+                const is_update_message = watch(
+                  `variation_options.${index}.inform_purchased_customer`,
+                );
+                return (
+                  <div
+                    key={`fieldAttributeValues-${index}`}
+                    className="mt-5 mb-5 border-b border-dashed border-border-200 p-5 last:mb-8 last:border-0 md:p-8 md:last:pb-0"
+                  >
+                    <Title className="mb-8 !text-lg">
+                      {t('form:form-title-variant')}:{' '}
+                      <span className="font-normal text-blue-600">
+                        {Array.isArray(fieldAttributeValue)
+                          ? fieldAttributeValue?.map((a) => a.value).join('/')
+                          : fieldAttributeValue?.title}
 
-                          {isObject(fieldAttributeValue)
-                            ? // @ts-ignore
-                              fieldAttributeValue?.value
-                            : ''}
-                        </span>
-                      </Title>
-                      <TitleAndOptionsInput
-                        register={register}
-                        setValue={setValue}
-                        index={index}
-                        fieldAttributeValue={fieldAttributeValue}
+                        {isObject(fieldAttributeValue)
+                          ? // @ts-ignore
+                            fieldAttributeValue?.value
+                          : ''}
+                      </span>
+                    </Title>
+
+                    <TitleAndOptionsInput
+                      register={register}
+                      setValue={setValue}
+                      index={index}
+                      fieldAttributeValue={fieldAttributeValue}
+                    />
+
+                    <input
+                      {...register(`variation_options.${index}.id`)}
+                      type="hidden"
+                    />
+
+                    <div className="grid grid-cols-2 gap-5">
+                      {/* Price Input */}
+                      <Input
+                        label={`${t('form:input-label-price')}*`}
+                        type="number"
+                        {...register(`variation_options.${index}.price`)}
+                        defaultValue={watch('variation_options.0.price')}
+                        // error={t(
+                        //   // @ts-ignore
+                        //   errors.variation_options?.[index]?.price?.message,
+                        // )}
+                        variant="outline"
+                        className="mb-5"
                       />
 
-                      <input
-                        {...register(`variation_options.${index}.id`)}
-                        type="hidden"
+                      {/* Sale Price Input */}
+                      <Input
+                        label={t('form:input-label-sale-price')}
+                        type="number"
+                        {...register(`variation_options.${index}.sale_price`)}
+                        defaultValue={watch('variation_options.0.sale_price')}
+                        // error={t(
+                        //   // @ts-ignore
+                        //   errors.variation_options?.[index]?.sale_price?.message,
+                        // )}
+                        variant="outline"
+                        className="mb-5"
                       />
 
-                      <div className="grid grid-cols-2 gap-5">
-                        <Input
-                          label={`${t('form:input-label-price')}*`}
-                          type="number"
-                          {...register(`variation_options.${index}.price`)}
-                          error={t(
-                            // @ts-ignore
-                            errors.variation_options?.[index]?.price?.message,
-                          )}
-                          variant="outline"
-                          className="mb-5"
-                        />
-                        <Input
-                          label={t('form:input-label-sale-price')}
-                          type="number"
-                          {...register(`variation_options.${index}.sale_price`)}
-                          error={t(
-                            // @ts-ignore
-                            errors.variation_options?.[index]?.sale_price
-                              ?.message,
-                          )}
-                          variant="outline"
-                          className="mb-5"
-                        />
-                        <Input
-                          label={`${t('form:input-label-sku')}*`}
-                          note={
-                            Config.enableMultiLang
-                              ? `${t('form:input-note-multilang-sku')}`
-                              : ''
-                          }
-                          {...register(`variation_options.${index}.sku`)}
-                          error={t(
-                            // @ts-ignore
-                            errors.variation_options?.[index]?.sku?.message,
-                          )}
-                          variant="outline"
-                          className="mb-5"
-                          inputClassName="uppercase"
-                        />
-                        <Input
-                          label={`${t('form:input-label-quantity')}*`}
-                          type="number"
-                          {...register(`variation_options.${index}.quantity`)}
-                          error={t(
-                            // @ts-ignore
-                            errors.variation_options?.[index]?.quantity
-                              ?.message,
-                          )}
-                          variant="outline"
-                          className="mb-5"
-                        />
-                      </div>
-                      <div>
-                        <Label>
-                          {t('form:input-label-image')}
-                          {' and size should not be more than'} &nbsp;
-                          {upload_max_filesize}
-                          {'MB '}
-                        </Label>
+<div >
+  <Input
+    label={`${t('form:input-label-sku')}*`}
+    note={
+      Config.enableMultiLang
+        ? `${t('form:input-note-multilang-sku')}`
+        : ''
+    }
+    {...register(`variation_options.${index}.sku`)}
+    defaultValue={`${initialValues?.name || ''}-SKU-${Date.now()}-${Math.floor(Math.random() * 1000)}-${index + 1}`} // Combine initialValue.name, unique timestamp, random number, and index
+    error={t(
+      // @ts-ignore
+      errors.variation_options?.[index]?.sku?.message,
+    )}
+    variant="outline"
+    className="mb-5"
+    inputClassName="uppercase"
+  />
+</div>
+
+          {/* Quantity Input */}
+                      <Input
+                        label={`${t('form:input-label-quantity')}*`}
+                        type="number"
+                        {...register(`variation_options.${index}.quantity`)}
+                        defaultValue={watch('variation_options.0.quantity')}
+                        // error={t(
+                        //   // @ts-ignore
+                        //   errors.variation_options?.[index]?.quantity?.message,
+                        // )}
+                        variant="outline"
+                        className="mb-5"
+                      />
+                    </div>
+
+                    {/* Image Input */}
+                    <div>
+                      <Label>
+                        {t('form:input-label-image')}
+                        {' and size should not be more than'} &nbsp;
+                        {upload_max_filesize}
+                        {'MB '}
+                      </Label>
+                      <FileInput
+                        name={`variation_options.${index}.image`}
+                        control={control}
+                        multiple={false}
+                      />
+                    </div>
+
+                    {/* Digital File Section */}
+                    {!!watch(`variation_options.${index}.is_digital`) && (
+                      <div className="mt-5">
+                        <Label>{t('form:input-label-digital-file')}</Label>
                         <FileInput
-                          name={`variation_options.${index}.image`}
+                          name={`variation_options.${index}.digital_file_input`}
                           control={control}
                           multiple={false}
+                          acceptFile={true}
+                          helperText={t('form:text-upload-digital-file')}
                         />
-                      </div>
-                      <div className="mt-5 mb-5">
-                        <Checkbox
-                          {...register(`variation_options.${index}.is_digital`)}
-                          label={t('form:input-label-is-digital')}
-                        />
-                        {!!watch(`variation_options.${index}.is_digital`) && (
-                          <div className="mt-5">
-                            <Label>{t('form:input-label-digital-file')}</Label>
-                            <FileInput
-                              name={`variation_options.${index}.digital_file_input`}
-                              control={control}
-                              multiple={false}
-                              acceptFile={true}
-                              helperText={t('form:text-upload-digital-file')}
-                            />
-                            {options?.enableEmailForDigitalProduct ? (
-                              <div className="mt-5 mb-5">
-                                <Checkbox
-                                  {...register(
-                                    `variation_options.${index}.inform_purchased_customer`,
-                                  )}
-                                  id={`variation_options.${index}.inform_purchased_customer`}
-                                  label="Send email to already purchased customer of this item about this update."
-                                  // disabled={Boolean(is_external)}
-                                  className="mb-5"
-                                />
-                                {is_update_message ? (
-                                  <TextArea
-                                    {...register(
-                                      `variation_options.${index}.product_update_message`,
-                                    )}
-                                    id={`variation_options.${index}.product_update_message`}
-                                    label="You can send message towards customer about this update."
-                                    variant="outline"
-                                    className="col-span-2"
-                                    placeholder="(Optional)"
-                                  />
-                                ) : null}
-                              </div>
-                            ) : null}
-
-                            {
-                              // @ts-ignore
-                              errors?.variation_options?.[index]
-                                ?.digital_file_input && (
-                                <ValidationError
-                                  message={t(
-                                    'form:error-digital-file-is-required',
-                                  )}
-                                />
-                              )
-                            }
-
-                            <Alert
-                              message={t('form:info-about-digital-product')}
-                              variant="info"
-                              closeable={false}
-                              className="mt-5 mb-5"
-                            />
-
-                            <input
-                              type="hidden"
+                        {options?.enableEmailForDigitalProduct && (
+                          <div className="mt-5 mb-5">
+                            <Checkbox
                               {...register(
-                                `variation_options.${index}.digital_files`,
+                                `variation_options.${index}.inform_purchased_customer`,
                               )}
+                              id={`variation_options.${index}.inform_purchased_customer`}
+                              label="Send email to already purchased customer of this item about this update."
+                              className="mb-5"
                             />
+                            {is_update_message && (
+                              <TextArea
+                                {...register(
+                                  `variation_options.${index}.product_update_message`,
+                                )}
+                                id={`variation_options.${index}.product_update_message`}
+                                label="You can send message towards customer about this update."
+                                variant="outline"
+                                className="col-span-2"
+                                placeholder="(Optional)"
+                              />
+                            )}
                           </div>
                         )}
                       </div>
-                      <div className="mt-5 mb-5">
-                        <Checkbox
-                          {...register(`variation_options.${index}.is_disable`)}
-                          error={t(
-                            // @ts-ignore
-                            errors.variation_options?.[index]?.is_disable
-                              ?.message,
-                          )}
-                          label={t('form:input-label-disable-variant')}
-                        />
-                      </div>
+                    )}
+
+                    {/* Disable Variant Checkbox */}
+                    <div className="mt-5 mb-5">
+                      <Checkbox
+                        {...register(`variation_options.${index}.is_disable`)}
+                        error={t(
+                          // @ts-ignore
+                          errors.variation_options?.[index]?.is_disable?.message,
+                        )}
+                        label={t('form:input-label-disable-variant')}
+                      />
                     </div>
-                  );
-                },
-              )}
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
@@ -378,14 +367,11 @@ export const TitleAndOptionsInput = ({
   useEffect(() => {
     setValue(`variation_options.${index}.title`, title);
     setValue(`variation_options.${index}.options`, options);
-  }, [fieldAttributeValue]);
+  }, [fieldAttributeValue, index, setValue]);
   return (
     <>
       <input {...register(`variation_options.${index}.title`)} type="hidden" />
-      <input
-        {...register(`variation_options.${index}.options`)}
-        type="hidden"
-      />
+      <input {...register(`variation_options.${index}.options`)} type="hidden" />
     </>
   );
 };
