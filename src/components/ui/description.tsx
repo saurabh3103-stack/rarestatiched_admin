@@ -15,7 +15,7 @@ const Description: React.FC<Props> = ({
 
   
 } ) => {
-  {console.log(title,details)}
+  
   return (
     <div className={className} {...props}>
       {title && (

@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react';
 import Input from '@/components/ui/input';
 import Description from '@/components/ui/description';
 import Card from '@/components/common/card';
@@ -21,6 +22,7 @@ export default function ProductSimpleForm({ initialValues, settings }: IProps) {
   const {
     register,
     control,
+    setValue,
     watch,
     formState: { errors },
   } = useFormContext();
@@ -31,6 +33,22 @@ export default function ProductSimpleForm({ initialValues, settings }: IProps) {
   const is_digital = watch('is_digital');
   const is_external = watch('is_external');
   const is_update_message = watch('inform_purchased_customer');
+
+
+
+  // Set SKU dynamically
+  useEffect(() => {
+    const generateSKU = () => {
+      const date = new Date();
+      const year = date.getFullYear();
+      const seconds = date.getSeconds();
+      return `${initialValues?.name || 'Default'}${date.getDate()}-${year}-${seconds}`;
+    };
+
+    if (!initialValues?.sku) {
+      setValue('sku', generateSKU());
+    }
+  }, [initialValues, setValue]);
 
   return (
     <div className="my-5 flex flex-wrap sm:my-8">
@@ -73,7 +91,7 @@ export default function ProductSimpleForm({ initialValues, settings }: IProps) {
           disabled={isTranslateProduct}
         />
 
-        <Input
+<Input
           label={`${t('form:input-label-sku')}*`}
           {...register('sku')}
           note={

@@ -134,8 +134,7 @@ export default function CreateOrUpdateProductForm({
   const [productCategory, setProductCategory] = useState(null);
   const [sizeChart, setSizeChart] = useState(false); // Manage size chart state
  
-  console.log(productCategory)
-  console.log(sizeChart)
+  
   const onSubmit = async (values: ProductFormValues) => {
    
     const inputValues = {
@@ -438,7 +437,7 @@ export default function CreateOrUpdateProductForm({
           rows={3} // Adjust the height of the textarea as needed
         />
       </div>
-{console.log(sizeChart)}
+{/* {console.log(sizeChart)} */}
       <div className="mb-5">
   <Label>Manage Size Chart</Label>
   <select
