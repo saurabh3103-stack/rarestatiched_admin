@@ -133,7 +133,7 @@ export default function CreateOrUpdateProductForm({
   const [shortDescription, setShortDescription] = useState('');
   const [productCategory, setProductCategory] = useState(null);
   const [sizeChart, setSizeChart] = useState(false); // Manage size chart state
-  const [lowerImageHighlight, setLowerImageHighlight] = useState(null);
+ 
   console.log(productCategory)
   console.log(sizeChart)
   const onSubmit = async (values: ProductFormValues) => {
@@ -143,7 +143,7 @@ export default function CreateOrUpdateProductForm({
       ...getProductInputValues(values, initialValues),
       product_category: productCategory,
       size_chart: sizeChart,
-      lower_image_highlight: lowerImageHighlight, 
+     
       short_description:shortDescription
       
     };
@@ -455,23 +455,7 @@ export default function CreateOrUpdateProductForm({
   </select>
 </div>
 
-      <div className="mb-5">
-        <Label>Lower Image Highlight</Label>
-        <select
-          id="lower_image_highlight"
-          name="lower_image_highlight"
-          value={lowerImageHighlight || ""}
-          onChange={(e) => setLowerImageHighlight(e.target.value || null)} // Set null if "Select..." is chosen
-          className="block w-full px-4 py-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
-        >
-          <option value="" className="text-gray-700">Select Fabric Type...</option>
-          <option value="100% Fabric" className="text-gray-700">100% Fabric</option>
-          <option value="100% Cotton" className="text-gray-700">100% Cotton</option>
-          <option value="Polyester Blend" className="text-gray-700">Polyester Blend</option>
-          <option value="Wool Blend" className="text-gray-700">Wool Blend</option>
-          <option value="Linen" className="text-gray-700">Linen</option>
-        </select>
-      </div>
+     
 
               <ProductCategoryInput control={control} setValue={setValue} />
               {/* it's not needed in chawkbazar */}
