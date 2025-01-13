@@ -19,7 +19,7 @@ const ProductGroupInput = ({ control, error }: Props) => {
     language: locale,
   });
   return (
-    <div className="mb-5">
+    <div className="mb-5" style={{ display: 'none' }}>
       {/* <Label>{t('form:input-label-group')}*</Label>
       <SelectInput
         name="type"
@@ -30,16 +30,16 @@ const ProductGroupInput = ({ control, error }: Props) => {
         isLoading={loading}
       />
       <ValidationError message={t(error!)} /> */}
-      {/* <SelectInput
+      <SelectInput
   name="type"
   control={control}
-  defaultValue={{ id: 'static-id', name: 'Static Value' }} // Static value
+ 
   getOptionLabel={(option: any) => option.name}
   getOptionValue={(option: any) => option.id}
   options={types!}
   isLoading={loading}
   style={{ display: 'none' }} // Hidden display
-/> */}
+/>
     </div>
     
   );
