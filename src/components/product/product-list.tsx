@@ -356,12 +356,46 @@ const ProductList = ({
         autoClose: 3000, // Auto close after 3 seconds
       });
       setProductsUpdated(true);
+
+      window.location.reload()
     } catch (error) {
       console.error('Error occurred:', error.response || error.message);
       toast.error('An error occurred while updating products.', {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000, // Auto close after 3 seconds
       });
+      window.location.reload()
+    }
+  };
+
+
+  const handleMultiDelete = async () => {
+    const payload = {
+      id: selectedProducts,
+    };
+
+    try {
+      const response = await axios.post(
+        'https://fun2sh.deificindia.com/products/multidelete',
+        payload,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success('Products deleted successfully!');
+        console.log('API Response:', response.data);
+        window.location.reload()
+      } else {
+        toast.error(`Failed to delete products: ${response.statusText}`);
+        console.error('Error:', response.statusText);
+      }
+    } catch (error) {
+      toast.error('Error deleting products. Please try again!');
+      console.error('Error during API call:', error);
     }
   };
 
@@ -415,6 +449,12 @@ const ProductList = ({
     >
       Change Status
     </button>
+    <button
+        className="px-4 py-2 bg-red-600 text-white font-semibold rounded-md shadow-sm hover:bg-red-700 transition-colors duration-200 focus:ring-2 focus:ring-red-400 focus:outline-none"
+        onClick={handleMultiDelete}
+      >
+        Delete All
+      </button>
   </div>
 </div>
 

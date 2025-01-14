@@ -115,6 +115,7 @@ const OrderList = ({
         autoClose: 3000, // Auto close after 3 seconds
       });
       setOrdersUpdated(true);
+      window.location.reload()
     } catch (error) {
       console.error('Error occurred:', error.response || error.message);
       toast.error('An error occurred while updating orders.', {
