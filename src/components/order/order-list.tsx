@@ -322,7 +322,7 @@ const OrderList = ({
 
 <>
        <div className="mb-6 p-6 border border-gray-300 rounded-lg bg-white shadow-md">
- <h3 className="text-xl font-bold text-gray-800 mb-4">Selected Products Actions</h3>
+ <h3 className="text-xl font-bold text-gray-800 mb-4">Selected Orders Actions</h3>
  <div className="flex items-center space-x-6">
    <div>
      <label 

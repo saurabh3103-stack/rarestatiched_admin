@@ -251,7 +251,7 @@ const Navbar = () => {
             <SearchBar />
           </div>
 
-          <div className="flex shrink-0 grow-0 basis-auto items-center">
+          {/* <div className="flex shrink-0 grow-0 basis-auto items-center">
             {hasAccess(adminAndOwnerOnly, permissions) && (
               <>
                 <div className="hidden border-gray-200/80 px-6 py-5 border-e 2xl:block">
@@ -295,7 +295,7 @@ const Navbar = () => {
                 ) : null}
               </>
             )}
-          </div>
+          </div> */}
 
           {enableMultiLang ? <LanguageSwitcher /> : null}
 
