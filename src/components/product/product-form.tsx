@@ -177,6 +177,9 @@ export default function CreateOrUpdateProductForm({
     }
   };
 
+
+
+
   const product_type = watch('product_type');
   const is_digital = watch('is_digital');
   const is_external = watch('is_external');
@@ -298,6 +301,16 @@ export default function CreateOrUpdateProductForm({
     name: 'variations',
   });
 
+
+  useEffect(() => {
+    if (initialValues) {
+      setShortDescription(initialValues.short_description|| '');
+      
+    setProductCategory(initialValues.product_category|| false);
+      setSizeChart(initialValues.size_chart)
+    }
+  }, [initialValues]);
+  console.log(initialValues)
   return (
     <>
       {errorMessage ? (
