@@ -19,19 +19,33 @@ const ProductGroupInput = ({ control, error }: Props) => {
     language: locale,
   });
   return (
-    <div className="mb-5" >
-      <Label>{t('form:input-label-group')}*</Label>
-      <SelectInput
-        name="type"
-        control={control}
-        getOptionLabel={(option: any) => option.name}
-        getOptionValue={(option: any) => option.id}
-        options={types!}
-        isLoading={loading}
-      />
-      <ValidationError message={t(error!)} />
+    // <div className="mb-5" >
+    //   <Label>{t('form:input-label-group')}*</Label>
+    //   <SelectInput
+    //     name="type"
+    //     control={control}
+    //     getOptionLabel={(option: any) => option.name}
+    //     getOptionValue={(option: any) => option.id}
+    //     options={types!}
+    //     isLoading={loading}
+    //   />
+    //   <ValidationError message={t(error!)} />
       
-    </div>
+    // </div>
+    <div className="mb-5 hidden" >
+  <Label>{t('form:input-label-group')}*</Label>
+  <SelectInput
+    name="type"
+    control={control}
+    getOptionLabel={(option: any) => option.name}
+    getOptionValue={(option: any) => option.id}
+    options={types!}
+    isLoading={loading}
+    defaultValue={{ id: 3, name: 'Vintgae', slug: 'vintgae', logo: null }}  // Setting default value here
+  />
+  <ValidationError message={t(error!)} />
+</div>
+
     
   );
 };

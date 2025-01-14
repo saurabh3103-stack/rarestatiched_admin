@@ -77,7 +77,7 @@ export default function CategoryTypeFilter({
         className,
       )}
     >
-      {enableType ? (
+      {/* {enableType ? (
         <div className="w-full">
           <Label>{t('common:filter-by-group')}</Label>
           <Select
@@ -92,7 +92,7 @@ export default function CategoryTypeFilter({
         </div>
       ) : (
         ''
-      )}
+      )} */}
 
       {enableCategory ? (
         <div className="w-full">

@@ -242,7 +242,7 @@ export default function ProductVariableForm({
                         className="mb-5"
                       />
 
-<div >
+<div className='hidden' >
   <Input
     label={`${t('form:input-label-sku')}*`}
     note={
