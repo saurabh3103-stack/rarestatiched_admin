@@ -1,5 +1,7 @@
 import Cookie from 'js-cookie';
-import SSRCookie from 'cookie';
+// import SSRCookie from 'cookie';
+import { parse } from 'cookie';
+
 import {
   AUTH_CRED,
   EMAIL_VERIFIED,
@@ -48,7 +50,11 @@ export function getAuthCredentials(context?: any): {
 }
 
 export function parseSSRCookie(context: any) {
-  return SSRCookie.parse(context.req.headers.cookie ?? '');
+  if (!context?.req?.headers?.cookie) {
+      console.warn('No cookies found in request');
+      return {};  // Return empty object if no cookies exist
+  }
+  return parse(context.req.headers.cookie);  // Use `cookie` package for parsing
 }
 
 export function hasAccess(
