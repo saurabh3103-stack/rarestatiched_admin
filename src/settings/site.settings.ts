@@ -132,6 +132,32 @@ export const siteSettings = {
                 label: 'text-inactive-shops',
                 icon: 'MyShopIcon',
               },
+
+              {
+                href: (shop: string) => `/${shop}${Routes.product.list}`,
+                label: 'text-all-products',
+                icon: 'ProductsIcon',
+                permissions: adminOwnerAndStaffOnly,
+              },
+              {
+                href: (shop: string) => `/${shop}${Routes.product.create}`,
+                label: 'text-new-products',
+                icon: 'ProductsIcon',
+                permissions: adminOwnerAndStaffOnly,
+              },
+              {
+                href: (shop: string) => `/${shop}${Routes.draftProducts}`,
+                label: 'text-my-draft',
+                icon: 'ProductsIcon',
+                permissions: adminOwnerAndStaffOnly,
+              },
+              {
+                href: (shop: string) =>
+                  `/${shop}${Routes.outOfStockOrLowProducts}`,
+                label: 'text-all-out-of-stock',
+                icon: 'ProductsIcon',
+                permissions: adminOwnerAndStaffOnly,
+              }
             ],
           },
           {
