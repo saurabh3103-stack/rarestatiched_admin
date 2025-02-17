@@ -4,7 +4,7 @@ import {
   adminOwnerAndStaffOnly,
   ownerAndStaffOnly,
 } from '@/utils/auth-utils';
-// fun2sh/products/create
+
 import { Routes } from '@/config/routes';
 
 export const siteSettings = {
@@ -107,46 +107,46 @@ export const siteSettings = {
       //   ],
       // },
 
-      shop: {
-        href: '',
-        label: 'text-shop-management',
-        icon: 'ShopIcon',
-        childMenu: [
-          {
-            href: '',
-            label: 'sidebar-nav-item-shops',
-            icon: 'ShopIcon',
-            childMenu: [
-              {
-                href: Routes.shop.list,
-                label: 'text-all-shops',
-                icon: 'MyShopIcon',
-              },
-              // {
-              //   href: Routes.shop.create,
-              //   label: 'text-add-all-shops',
-              //   icon: 'ShopIcon',
-              // },
-              {
-                href: Routes.newShops,
-                label: 'text-inactive-shops',
-                icon: 'MyShopIcon',
-              },
-            ],
-          },
-          {
-            href: Routes.adminMyShops,
-            label: 'sidebar-nav-item-my-shops',
-            icon: 'MyShopIcon',
-          },
-          // {
-          //   href: Routes.ownershipTransferRequest.list,
-          //   label: 'Shop Transfer Request',
-          //   icon: 'MyShopIcon',
-          //   permission: adminAndOwnerOnly,
-          // },
-        ],
-      },
+      // shop: {
+      //   href: '',
+      //   label: 'text-shop-management',
+      //   icon: 'ShopIcon',
+      //   childMenu: [
+      //     {
+      //       href: '',
+      //       label: 'sidebar-nav-item-shops',
+      //       icon: 'ShopIcon',
+      //       childMenu: [
+      //         {
+      //           href: Routes.shop.list,
+      //           label: 'text-all-shops',
+      //           icon: 'MyShopIcon',
+      //         },
+      //         // {
+      //         //   href: Routes.shop.create,
+      //         //   label: 'text-add-all-shops',
+      //         //   icon: 'ShopIcon',
+      //         // },
+      //         {
+      //           href: Routes.newShops,
+      //           label: 'text-inactive-shops',
+      //           icon: 'MyShopIcon',
+      //         },
+      //       ],
+      //     },
+      //     {
+      //       href: Routes.adminMyShops,
+      //       label: 'sidebar-nav-item-my-shops',
+      //       icon: 'MyShopIcon',
+      //     },
+      //     // {
+      //     //   href: Routes.ownershipTransferRequest.list,
+      //     //   label: 'Shop Transfer Request',
+      //     //   icon: 'MyShopIcon',
+      //     //   permission: adminAndOwnerOnly,
+      //     // },
+      //   ],
+      // },
 
       product: {
         href: '',
@@ -159,34 +159,42 @@ export const siteSettings = {
             icon: 'ProductsIcon',
             childMenu: [
               {
-                
-                href: Routes.product.list,
+                href: `/fun2sh${Routes.product.list}`, // Add "fun2sh" as a prefix to the existing URL
                 label: 'text-all-products',
                 icon: 'ProductsIcon',
-                
               },
               {
-                href: Routes.product.create,
+                href: `/fun2sh${Routes.product.create}`, // Add "fun2sh" for create product URL
                 label: 'Add new product',
                 icon: 'ProductsIcon',
               },
               {
-                href: Routes.draftProducts,
+                href: `/fun2sh${Routes.draftProducts}`,
                 label: 'text-my-draft-products',
                 icon: 'ProductsIcon',
               },
               {
-                href: Routes.outOfStockOrLowProducts,
+                href:`/fun2sh${ Routes.outOfStockOrLowProducts}`,
                 label: 'text-all-out-of-stock',
                 icon: 'ProductsIcon',
               },
             ],
           },
           {
-            href: Routes.productInventory,
+            href: `/fun2sh${Routes.productInventory}`,
             label: 'text-inventory',
             icon: 'InventoryIcon',
           },
+
+          {
+            href:`/fun2sh${Routes.attribute.list}`,
+            label: 'sidebar-nav-item-attributes',
+            icon: 'AttributeIcon',
+           
+          },
+
+
+          
           {
             href: Routes.type.list,
             label: 'text-groups',
