@@ -168,11 +168,11 @@ export const siteSettings = {
                 label: 'Add new product',
                 icon: 'ProductsIcon',
               },
-              {
-                href: `${Routes.draftProducts}`,
-                label: 'text-my-draft-products',
-                icon: 'ProductsIcon',
-              },
+              // {
+              //   href: `${Routes.draftProducts}`,
+              //   label: 'text-my-draft-products',
+              //   icon: 'ProductsIcon',
+              // },
               {
                 href:`${ Routes.outOfStockOrLowProducts}`,
                 label: 'text-all-out-of-stock',
@@ -389,11 +389,11 @@ export const siteSettings = {
             label: 'text-all-users',
             icon: 'UsersIcon',
           },
-          {
-            href: Routes.adminList,
-            label: 'text-admin-list',
-            icon: 'AdminListIcon',
-          },
+          // {
+          //   href: Routes.adminList,
+          //   label: 'text-admin-list',
+          //   icon: 'AdminListIcon',
+          // },
           // {
           //   href: '',
           //   label: 'text-vendors',
@@ -411,23 +411,23 @@ export const siteSettings = {
           //     },
           //   ],
           // },
-          {
-            href: '',
-            label: 'sidebar-nav-item-staffs',
-            icon: 'StaffIcon',
-            childMenu: [
-              {
-                href: Routes.myStaffs,
-                label: 'sidebar-nav-item-my-staffs',
-                icon: 'UsersIcon',
-              },
+          // {
+          //   href: '',
+          //   label: 'sidebar-nav-item-staffs',
+          //   icon: 'StaffIcon',
+          //   childMenu: [
+              // {
+              //   href: Routes.myStaffs,
+              //   label: 'sidebar-nav-item-my-staffs',
+              //   icon: 'UsersIcon',
+              // },
               // {
               //   href: Routes.vendorStaffs,
               //   label: 'sidebar-nav-item-vendor-staffs',
               //   icon: 'UsersIcon',
               // },
-            ],
-          },
+            // ],
+          // },
           {
             href: Routes.customerList,
             label: 'text-customers',
