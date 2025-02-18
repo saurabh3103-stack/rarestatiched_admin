@@ -159,47 +159,37 @@ export const siteSettings = {
             icon: 'ProductsIcon',
             childMenu: [
               {
-                href: `/fun2sh${Routes.product.list}`, // Add "fun2sh" as a prefix to the existing URL
+                href: `${Routes.product.list}`, // Add "fun2sh" as a prefix to the existing URL
                 label: 'text-all-products',
                 icon: 'ProductsIcon',
               },
               {
-                href: `/fun2sh${Routes.product.create}`, // Add "fun2sh" for create product URL
+                href: `${Routes.product.create}`, // Add "fun2sh" for create product URL
                 label: 'Add new product',
                 icon: 'ProductsIcon',
               },
               {
-                href: `/fun2sh${Routes.draftProducts}`,
+                href: `${Routes.draftProducts}`,
                 label: 'text-my-draft-products',
                 icon: 'ProductsIcon',
               },
               {
-                href:`/fun2sh${ Routes.outOfStockOrLowProducts}`,
+                href:`${ Routes.outOfStockOrLowProducts}`,
                 label: 'text-all-out-of-stock',
                 icon: 'ProductsIcon',
               },
             ],
           },
           {
-            href: `/fun2sh${Routes.productInventory}`,
+            href: `${Routes.productInventory}`,
             label: 'text-inventory',
             icon: 'InventoryIcon',
-          },
-
-          {
-            href:`/fun2sh${Routes.attribute.list}`,
-            label: 'sidebar-nav-item-attributes',
-            icon: 'AttributeIcon',
-           
-          },
-
-
-          
-          {
-            href: Routes.type.list,
-            label: 'text-groups',
-            icon: 'HomeIcon',
-          },
+          },          
+          // {
+          //   href: Routes.type.list,
+          //   label: 'text-groups',
+          //   icon: 'HomeIcon',
+          // },
           {
             href: Routes.category.list,
             label: 'sidebar-nav-item-categories',

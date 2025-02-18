@@ -1,6 +1,3 @@
-import { useRouter } from 'next/router';
-import ErrorMessage from '@/components/ui/error-message';
-import Loader from '@/components/ui/loader/loader';
 import CreateOrUpdateAttributeForm from '@/components/attribute/attribute-form';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -11,36 +8,23 @@ import {
   getAuthCredentials,
   hasAccess,
 } from '@/utils/auth-utils';
-import { useAttributeQuery } from '@/data/attributes';
-import { Config } from '@/config';
 import { Routes } from '@/config/routes';
 import { useMeQuery } from '@/data/user';
-import shop from '@/components/layouts/shop';
+import { useRouter } from 'next/router';
 import { useShopQuery } from '@/data/shop';
 
-export default function UpdateAttributePage() {
+export default function CreateAttributePage() {
   const { t } = useTranslation();
   const router = useRouter();
+  const {
+    query: { shop },
+  } = useRouter();
   const { permissions } = getAuthCredentials();
   const { data: me } = useMeQuery();
-  const { query, locale } = useRouter();
   const { data: shopData } = useShopQuery({
-    slug: query?.shop as string,
+    slug: 'fun2sh',
   });
   const shopId = shopData?.id!;
-
-  const {
-    data,
-    isLoading: loading,
-    error,
-  } = useAttributeQuery({
-    slug: query.attributeId as string,
-    language:
-      query.action!.toString() === 'edit' ? locale! : Config.defaultLanguage,
-  });
-
-  if (loading) return <Loader text={t('common:text-loading')} />;
-  if (error) return <ErrorMessage message={error.message} />;
 
   if (
     !hasAccess(adminOnly, permissions) &&
@@ -52,21 +36,21 @@ export default function UpdateAttributePage() {
 
   return (
     <>
-      <div className="flex py-5 border-b border-dashed border-border-base sm:py-8">
+      <div className="flex border-b border-dashed border-border-base pb-5 md:pb-7">
         <h1 className="text-lg font-semibold text-heading">
-          {t('form:edit-attribute')}
+          {t('form:create-new-attribute')}
         </h1>
       </div>
-      <CreateOrUpdateAttributeForm initialValues={data} />
+      <CreateOrUpdateAttributeForm />
     </>
   );
 }
-UpdateAttributePage.authenticate = {
+CreateAttributePage.authenticate = {
   permissions: adminOwnerAndStaffOnly,
 };
-UpdateAttributePage.Layout = ShopLayout;
+CreateAttributePage.Layout = ShopLayout;
 export const getServerSideProps = async ({ locale }: any) => ({
   props: {
-    ...(await serverSideTranslations(locale, ['table', 'common', 'form'])),
+    ...(await serverSideTranslations(locale, ['common', 'form'])),
   },
 });

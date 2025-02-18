@@ -95,12 +95,14 @@ export default function CreateOrUpdateProductForm({
   ];
 
   const { data: shopData } = useShopQuery(
-    { slug: router.query.shop as string },
+    // { slug: router.query.shop as string },
+    { slug: 'fun2sh'},
     {
       enabled: !!router.query.shop,
     },
   );
   const shopId = shopData?.id!;
+  // console.log(alert(shopId));
   const isNewTranslation = router?.query?.action === 'translate';
   const showPreviewButton =
     router?.query?.action === 'edit' && Boolean(initialValues?.slug);
