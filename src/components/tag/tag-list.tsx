@@ -6,16 +6,17 @@ import { SortOrder } from '@/types';
 import { useState } from 'react';
 import TitleWithSort from '@/components/ui/title-with-sort';
 import { MappedPaginatorInfo, Tag } from '@/types';
-import { Config } from '@/config';
-import Link from '@/components/ui/link';
 import { NoDataFound } from '@/components/icons/no-data-found';
-import { Routes } from '@/config/routes';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
+import { Routes } from '@/config/routes';
 import * as categoriesIcon from '@/components/icons/category';
 import { getIcon } from '@/utils/get-icon';
 
 export type IProps = {
-  tags: any | undefined | null;
+  tags: Tag[] | undefined | null;
   onPagination: (key: number) => void;
   onSort: (current: any) => void;
   onOrder: (current: string) => void;
@@ -40,6 +41,8 @@ const TagList = ({
     column: null,
   });
 
+  const [selectedTags, setSelectedTags] = useState<number[]>([]);
+
   const onHeaderClick = (column: string | null) => ({
     onClick: () => {
       onSort((currentSortDirection: SortOrder) =>
@@ -55,7 +58,71 @@ const TagList = ({
     },
   });
 
+  const handleSelectTag = (id: number) => {
+    setSelectedTags((prevSelected) =>
+      prevSelected.includes(id)
+        ? prevSelected.filter((tagId) => tagId !== id)
+        : [...prevSelected, id]
+    );
+  };
+
+  const handleMultiDelete = async () => {
+    const payload = {
+      id: selectedTags,
+    };
+
+    try {
+      const response = await axios.post(
+        'https://fun2sh.deificindia.com/tags/multidelete',
+        payload,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success('Tags deleted successfully!');
+        console.log('API Response:', response.data);
+        window.location.reload();
+      } else {
+        toast.error(`Failed to delete tags: ${response.statusText}`);
+        console.error('Error:', response.statusText);
+      }
+    } catch (error) {
+      toast.error('Error deleting tags. Please try again!');
+      console.error('Error during API call:', error);
+    }
+  };
+
   const columns = [
+    {
+      title: (
+        <input
+          type="checkbox"
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedTags(tags?.map((tag) => tag.id) || []);
+            } else {
+              setSelectedTags([]);
+            }
+          }}
+          checked={selectedTags.length === (tags?.length || 0)}
+        />
+      ),
+      dataIndex: 'select',
+      key: 'select',
+      align: 'center',
+      width: 50,
+      render: (text: any, record: Tag) => (
+        <input
+          type="checkbox"
+          checked={selectedTags.includes(record.id)}
+          onChange={() => handleSelectTag(record.id)}
+        />
+      ),
+    },
     {
       title: (
         <TitleWithSort
@@ -118,7 +185,6 @@ const TagList = ({
         );
       },
     },
-
     {
       title: t('table:table-item-actions'),
       dataIndex: 'slug',
@@ -138,6 +204,20 @@ const TagList = ({
 
   return (
     <>
+      {selectedTags.length > 0 && (
+        <div className="mb-6 p-6 border border-gray-300 rounded-lg bg-white shadow-md">
+          <h3 className="text-xl font-bold text-gray-800 mb-4">Selected Tags Actions</h3>
+          <div className="flex items-center space-x-6">
+            <button
+              className="px-4 py-2 bg-red-600 text-white font-semibold rounded-md shadow-sm hover:bg-red-700 transition-colors duration-200 focus:ring-2 focus:ring-red-400 focus:outline-none"
+              onClick={handleMultiDelete}
+            >
+              Delete All
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="mb-6 overflow-hidden rounded shadow">
         <Table
           //@ts-ignore

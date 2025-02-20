@@ -15,6 +15,9 @@ import { Routes } from '@/config/routes';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
 import { NoDataFound } from '@/components/icons/no-data-found';
 import { siteSettings } from '@/settings/site.settings';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export type IProps = {
   categories: Category[] | undefined;
@@ -23,6 +26,7 @@ export type IProps = {
   onSort: (current: any) => void;
   onOrder: (current: string) => void;
 };
+
 const CategoryList = ({
   categories,
   paginatorInfo,
@@ -41,6 +45,8 @@ const CategoryList = ({
     column: null,
   });
 
+  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+
   const onHeaderClick = (column: string | null) => ({
     onClick: () => {
       onSort((currentSortDirection: SortOrder) =>
@@ -56,7 +62,74 @@ const CategoryList = ({
     },
   });
 
+  const handleSelectCategory = (id: number) => {
+    setSelectedCategories((prevSelected) =>
+      prevSelected.includes(id)
+        ? prevSelected.filter((categoryId) => categoryId !== id)
+        : [...prevSelected, id]
+    );
+  };
+
+  const handleMultiDelete = async () => {
+    const payload = {
+      ids: selectedCategories,
+    };
+
+    try {
+      const response = await axios.post(
+        'https://fun2sh.deificindia.com/categories/multidelete',
+        payload,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            
+      'Cookie': `XSRF-TOKEN=eyJpdiI6ImE1VDV4OVlHTnA1VUpNR0RQZk9IUWc9PSIsInZhbHVlIjoiOU9UaU44eXpnK2JtVHR0VFdoam5jQlJET0kzanhIYzQydUMxMFpXcjAvNjRnUVJOY0Q2UGg0aDA2c0hhQXAra0xjS3lFV1Z3ejg0aFVIWFlqL0lLSHB6dGx4NitKRjVGOHhLc292a2VkK0xzYnNLamQzSzVnYmFJSGdBYTZaQmIiLCJtYWMiOiIwNDE4MWQxN2FkYWQ3ZDBmYWY3YTdjNTE1NWFiODAzNmU2ZDYxYzliZDlhMjc1MWYxMDAxMGY1ZmEzYjA4Y2JlIiwidGFnIjoiIn0%3D; chawkbazar_session=eyJpdiI6IjdMYmxHdVpwNHgrUER6QmkwRHlQTFE9PSIsInZhbHVlIjoiYWRzWStndG1QeWU5cEZLWlVBTkxoV3N0T3pmY3JTd01Fc0R0UkUvcG9LT1BMUmpJSWZXdFBTdjdZcTVUUzRxekxkSERJdXl2cy9HdHZDWkNKTkNiRzdScG5pZ3hMYkdkbUFzNXNUZWRTeVpvaTRTQ0lTemUvMVRDVEJrTnlyNXYiLCJtYWMiOiI1ZDNhNmY1ZTRmMmJlNTlhYjZhMDhhNzAxNzBhNjMyYTRhOWI2YzQzOWZiMDQyZjFkNTRiMTM3ZDU0NjgwODVlIiwidGFnIjoiIn0%3D`,
+            
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success('Categories deleted successfully!');
+        console.log('API Response:', response.data);
+        window.location.reload();
+      } else {
+        toast.error(`Failed to delete categories: ${response.statusText}`);
+        console.error('Error:', response.statusText);
+      }
+    } catch (error) {
+      toast.error('Error deleting categories. Please try again!');
+      console.error('Error during API call:', error);
+    }
+  };
+
   const columns = [
+    {
+      title: (
+        <input
+          type="checkbox"
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedCategories(categories?.map((category) => category.id) || []);
+            } else {
+              setSelectedCategories([]);
+            }
+          }}
+          checked={selectedCategories.length === (categories?.length || 0)}
+        />
+      ),
+      dataIndex: 'select',
+      key: 'select',
+      align: 'center',
+      width: 50,
+      render: (text: any, record: Category) => (
+        <input
+          type="checkbox"
+          checked={selectedCategories.includes(record.id)}
+          onChange={() => handleSelectCategory(record.id)}
+        />
+      ),
+    },
     {
       title: t('table:table-item-id'),
       dataIndex: 'id',
@@ -198,6 +271,20 @@ const CategoryList = ({
 
   return (
     <>
+      {selectedCategories.length > 0 && (
+        <div className="mb-6 p-6 border border-gray-300 rounded-lg bg-white shadow-md">
+          <h3 className="text-xl font-bold text-gray-800 mb-4">Selected Categories Actions</h3>
+          <div className="flex items-center space-x-6">
+            <button
+              className="px-4 py-2 bg-red-600 text-white font-semibold rounded-md shadow-sm hover:bg-red-700 transition-colors duration-200 focus:ring-2 focus:ring-red-400 focus:outline-none"
+              onClick={handleMultiDelete}
+            >
+              Delete All
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="mb-6 overflow-hidden rounded shadow">
         <Table
           //@ts-ignore

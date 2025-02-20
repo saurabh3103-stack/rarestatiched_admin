@@ -18,6 +18,9 @@ import TitleWithSort from '@/components/ui/title-with-sort';
 import { NoDataFound } from '@/components/icons/no-data-found';
 import Avatar from '@/components/common/avatar';
 import Badge from '@/components/ui/badge/badge';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 type IProps = {
   customers: User[] | undefined;
@@ -26,6 +29,7 @@ type IProps = {
   onSort: (current: any) => void;
   onOrder: (current: string) => void;
 };
+
 const UserList = ({
   customers,
   paginatorInfo,
@@ -43,6 +47,8 @@ const UserList = ({
     column: null,
   });
 
+  const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
+
   const onHeaderClick = (column: any | null) => ({
     onClick: () => {
       onSort((currentSortDirection: SortOrder) =>
@@ -58,7 +64,72 @@ const UserList = ({
       });
     },
   });
+
+  const handleSelectUser = (id: number) => {
+    setSelectedUsers((prevSelected) =>
+      prevSelected.includes(id)
+        ? prevSelected.filter((userId) => userId !== id)
+        : [...prevSelected, id]
+    );
+  };
+
+  const handleMultiDelete = async () => {
+    const payload = {
+      id: selectedUsers,
+    };
+
+    try {
+      const response = await axios.post(
+        'https://fun2sh.deificindia.com/user/multidelete',
+        payload,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success('Users deleted successfully!');
+        console.log('API Response:', response.data);
+        window.location.reload();
+      } else {
+        toast.error(`Failed to delete users: ${response.statusText}`);
+        console.error('Error:', response.statusText);
+      }
+    } catch (error) {
+      toast.error('Error deleting users. Please try again!');
+      console.error('Error during API call:', error);
+    }
+  };
+
   const columns = [
+    {
+      title: (
+        <input
+          type="checkbox"
+          onChange={(e) => {
+            if (e.target.checked) {
+              setSelectedUsers(customers?.map((user) => user.id) || []);
+            } else {
+              setSelectedUsers([]);
+            }
+          }}
+          checked={selectedUsers.length === (customers?.length || 0)}
+        />
+      ),
+      dataIndex: 'select',
+      key: 'select',
+      align: 'center',
+      width: 50,
+      render: (text: any, record: User) => (
+        <input
+          type="checkbox"
+          checked={selectedUsers.includes(record.id)}
+          onChange={() => handleSelectUser(record.id)}
+        />
+      ),
+    },
     {
       title: (
         <TitleWithSort
@@ -194,6 +265,20 @@ const UserList = ({
 
   return (
     <>
+      {selectedUsers.length > 0 && (
+        <div className="mb-6 p-6 border border-gray-300 rounded-lg bg-white shadow-md">
+          <h3 className="text-xl font-bold text-gray-800 mb-4">Selected Users Actions</h3>
+          <div className="flex items-center space-x-6">
+            <button
+              className="px-4 py-2 bg-red-600 text-white font-semibold rounded-md shadow-sm hover:bg-red-700 transition-colors duration-200 focus:ring-2 focus:ring-red-400 focus:outline-none"
+              onClick={handleMultiDelete}
+            >
+              Delete All
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="mb-6 overflow-hidden rounded shadow">
         <Table
           // @ts-ignore

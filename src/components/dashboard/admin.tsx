@@ -216,12 +216,12 @@ export default function Dashboard() {
             color="#D74EFF"
             price={data?.totalVendors}
           /> */}
-          <StickerCard
+          {/* <StickerCard
             titleTransKey="sticker-card-title-total-shops"
             icon={<BasketIcon className="h-8 w-8" />}
             color="#E157A0"
             price={data?.totalShops}
-          />
+          /> */}
         </div>
       </div>
 
