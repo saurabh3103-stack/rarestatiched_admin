@@ -71,7 +71,31 @@ export default function ProductsPage() {
           </div>
 
           <div className="flex w-full flex-col items-center ms-auto md:w-2/4">
-            <Search
+           
+              <CategoryTypeFilter
+              className="w-full"
+              type={type}
+              onCategoryFilter={(category: Category) => {
+                setCategory(category?.slug!);
+                setPage(1);
+              }}
+              onTypeFilter={(type: Type) => {
+                setType(type?.slug!);
+                setPage(1);
+              }}
+              onProductTypeFilter={(productType: ProductTypeOptions) => {
+                setProductType(productType?.slug!);
+                setPage(1);
+              }}
+              enableCategory
+              enableType
+              enableProductType
+            />
+          </div>
+
+
+          <div className="flex w-full flex-col items-center ms-auto md:w-1/4">
+           <Search
               onSearch={handleSearch}
               placeholderText={t('form:input-placeholder-search-name')}
             />
@@ -96,27 +120,9 @@ export default function ProductsPage() {
             'invisible h-0': !visible,
           })}
         >
-          <div className="mt-5 flex w-full flex-col border-t border-gray-200 pt-5 md:mt-8 md:flex-row md:items-center md:pt-8">
-            <CategoryTypeFilter
-              className="w-full"
-              type={type}
-              onCategoryFilter={(category: Category) => {
-                setCategory(category?.slug!);
-                setPage(1);
-              }}
-              onTypeFilter={(type: Type) => {
-                setType(type?.slug!);
-                setPage(1);
-              }}
-              onProductTypeFilter={(productType: ProductTypeOptions) => {
-                setProductType(productType?.slug!);
-                setPage(1);
-              }}
-              enableCategory
-              enableType
-              enableProductType
-            />
-          </div>
+          {/* <div className="mt-5 flex w-full flex-col border-t border-gray-200 pt-5 md:mt-8 md:flex-row md:items-center md:pt-8">
+          
+          </div> */}
         </div>
       </Card>
       <ProductList

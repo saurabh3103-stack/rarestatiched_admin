@@ -95,8 +95,8 @@ export default function CategoryTypeFilter({
       )} */}
 
       {enableCategory ? (
-        <div className="w-full">
-          <Label>{t('common:filter-by-category')}</Label>
+        <div className="w-half">
+          {/* <Label>{t('common:filter-by-category')}</Label> */}
           <Select
             options={categories}
             getOptionLabel={(option: any) => option.name}
@@ -129,8 +129,8 @@ export default function CategoryTypeFilter({
       )}
 
       {enableProductType ? (
-        <div className="w-full">
-          <Label>Filter by Product Type</Label>
+        <div className="w-half">
+          {/* <Label>Filter by Product Type</Label> */}
           <Select
             options={productType}
             getOptionLabel={(option: any) => option.name}
