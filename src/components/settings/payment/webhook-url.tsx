@@ -43,7 +43,7 @@ const WebHookURL = ({ gateway }: WebHookURLProps) => {
   };
   const url = `${
     process.env.NEXT_PUBLIC_REST_API_ENDPOINT
-  }/webhooks/${gateway?.name?.toLowerCase()}`;
+  }webhooks/${gateway?.name?.toLowerCase()}`;
 
   setTimeout(() => {
     setCopied(false);
